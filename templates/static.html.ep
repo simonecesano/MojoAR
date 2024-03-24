@@ -1,0 +1,22 @@
+% layout 'default';
+% title 'Welcome';
+<div id="app">
+  <div id="scene">
+    <h1>Thing</h1>
+    <iframe id="inlineFrameExample"
+	    title="Inline Frame Example"
+	    width="300"
+	    height="200"
+	    src="/iframe">
+    </iframe>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+	setTimeout(function(){
+	    document.addEventListener('build', () => {
+		console.log('something')
+	    });
+	}, 1000)
+    })
+  </script>
+</div>
