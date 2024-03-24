@@ -1,0 +1,6 @@
+% layout 'vue';
+% title 'Welcome';
+<div id="app">
+  <router-view>
+  </router-view>
+</div>
