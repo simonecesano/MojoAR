@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@1.0.0/dist/aframe-look-at-component.min.js"></script>
+    <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
+    <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
+  </head>
+  <body style="margin : 0px; overflow: hidden;">
+    <a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true'>
+      <a-camera gps-new-camera='gpsMinDistance: 5; near: 10; far: 40'></a-camera>
+      % if (stash("mode") eq "text") {
+      % for my $p ($points->@*) {
+      <a-text value="<%= $p->[2] %>" look-at="[gps-new-camera]" scale="75 75 75" gps-new-entity-place="latitude: <%= $p->[1]->[0] %>; longitude: <%= $p->[1]->[1] %>"></a-text>
+      % }
+      % } else {
+      % for my $p ($points->@*) {
+      <a-entity position="0 2 0"
+		material='color: red' geometry='primitive: box'
+		gps-new-entity-place="latitude: <%= $p->[1]->[0] %>; longitude: <%= $p->[1]->[1] %>" scale="3 3 3"></a-entity>
+      % }
+      % }
+    </a-scene>
+  </body>
+  <script>
+var emitThisClick = function(e){ console.log('click button', e) }
+document.addEventListener("DOMContentLoaded", function() {
+    const event = new Event('iframe-ready');
+    window.parent.document.dispatchEvent(event)
+});    
+window.addEventListener("arjs-video-loaded", evt => {
+    console.log('arjs-video-loaded')
+    console.log(evt.detail.component)
+})
+  </script>
+</html>
