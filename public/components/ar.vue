@@ -11,9 +11,8 @@
 <template>
   <div id="main">
   <a-scene ref="scene" id="scene" vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: true' renderer='antialias: true; alpha: true' embedded>
-      <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
-      <a-entity 
-		material='color: red' geometry='primitive: box'
+    <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
+      <a-entity material='color: red' geometry='primitive: box'
 		gps-new-entity-place="latitude: 45.438927; longitude: 12.320719" scale="3 3 3"></a-entity>
       <a-entity 
 		material='color: red' geometry='primitive: box'
@@ -1211,28 +1210,50 @@
 module.exports = {
     data: function () {
 	return {
-	    location: undefined
+	    location: undefined,
+	    points: [],
 	};
     },
     async mounted(){
+	var ctx = this;
+	window.addEventListener("error", (e) => {
+	    console.rlog("error", e.toString())
+	});
 	this.setUpVideo();
 	this.setUpLocation();
+	setInterval(function() {
+	    ctx.getPoints()
+	}, 1000)
     },
     destroyed: function(){
     },
     methods: {
+	getPoints: function() {
+	    var ctx = this;
+	    if (!ctx.location) { console.rlog("no location", ctx.location ); return }
+	    axios.get("/api/v1/points", { params: { coords: ctx.location.join(","), radius: 0.5 } } )
+		.then(d => {
+		    console.rlog("points", d.data)
+		    ctx.points = d.data
+		    // console.rlog("points", ctx.points.length)
+		})
+		.catch(e => console.rlog(e.toString()))
+	},
 	setUpLocation: function(){
 	    var ctx = this;
 	    if ("geolocation" in navigator) {
 		navigator.geolocation.getCurrentPosition((position) => {
-		    console.rlog("location", position.coords.latitude, position.coords.longitude);
-		    ctx.location = [position.coords.longitude, position.coords.latitude]
+		    console.rlog("location", position.coords.longitude, position.coords.latitude);
+		    ctx.location = [position.coords.longitude, position.coords.latitude ]
+
 		});
 		const watchID = navigator.geolocation.watchPosition((position) => {
 		    if (ctx.location) {
 			var pointA = turf.point(ctx.location);
 			var pointB = turf.point([position.coords.longitude, position.coords.latitude]);
-			console.rlog("distance", turf.distance(pointA, pointB, {units: 'meters'}));
+			if (distance > 3) {
+			    console.rlog("distance", turf.distance(pointA, pointB, {units: 'meters'}));
+			}
 		    }
 		    ctx.location = [position.coords.longitude, position.coords.latitude]
 		});
