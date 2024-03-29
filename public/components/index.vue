@@ -6,6 +6,8 @@
     <ul>
       <li><router-link :to="{ name: 'iframear' }">AR using iframe</router-link></li>
       <li><router-link :to="{ name: 'vuear' }">AR using vue directly</router-link></li>
+      <li><router-link :to="{ name: 'touch' }">Touch event experiment</router-link></li>
+      <li><router-link :to="{ name: 'handdetection' }">Hand detection experiment</router-link></li>
     </ul>      
   </div>
 </template>
