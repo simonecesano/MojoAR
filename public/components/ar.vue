@@ -7,7 +7,6 @@
 
   video[display="none"] { display: none }
 
-
 </style>
 <template>
   <div id="main">
@@ -1212,48 +1211,70 @@
 module.exports = {
     data: function () {
 	return {
-	    location: ""
+	    location: undefined
 	};
     },
     async mounted(){
-	var ctx = this;
-	console.rlog("screen", window.screen.width, window.screen.height)
-
-	var refreshIntervalId = setInterval(function(){
-	    var video = document.querySelector('video[display="none"]')
-	    if (video) {
-		video.addEventListener( "loadedmetadata", function (e) {
-		    console.rlog("loadedmetadata", new Date())
-
-		    ctx.$refs.scene.style.width = (window.screen.width) + "px"
-		    ctx.$refs.scene.style.height = (window.screen.width / video.videoWidth * video.videoHeight) + "px"
-
-		    console.rlog("video", video.videoWidth, video.videoHeight)
-		    console.rlog("scene", ctx.$refs.scene.style.width, ctx.$refs.scene.style.height)
-		    console.rlog("scene", ctx.$refs.scene.getClientRects())
-		    console.rlog("scene", ctx.$refs.scene.getBoundingClientRect())
-
-		    let aScene = ctx.$refs.scene
-
-		    console.rlog("aspect before", aScene.camera.aspect);
-		    try {
-			aScene.camera.aspect = aScene.clientWidth/aScene.clientHeight;
-			aScene.camera.updateProjectionMatrix();
-			console.rlog("aspect after", aScene.camera.aspect)
-		    } catch(e) {
-			console.rlog("error", e.toString())
-		    }
-		}, false );
-		// ctx.$refs.scene.style.width = video.videoWidth + "px"
-		// ctx.$refs.scene.style.height = video.videoHeight + "px"
-		console.rlog("in video", new Date())
-		clearInterval(refreshIntervalId)
-	    }
-	}, 1000);
+	this.setUpVideo();
+	this.setUpLocation();
     },
     destroyed: function(){
     },
     methods: {
+	setUpLocation: function(){
+	    var ctx = this;
+	    if ("geolocation" in navigator) {
+		navigator.geolocation.getCurrentPosition((position) => {
+		    console.rlog("location", position.coords.latitude, position.coords.longitude);
+		    ctx.location = [position.coords.longitude, position.coords.latitude]
+		});
+		const watchID = navigator.geolocation.watchPosition((position) => {
+		    if (ctx.location) {
+			var pointA = turf.point(ctx.location);
+			var pointB = turf.point([position.coords.longitude, position.coords.latitude]);
+			console.rlog("distance", turf.distance(pointA, pointB, {units: 'meters'}));
+		    }
+		    ctx.location = [position.coords.longitude, position.coords.latitude]
+		});
+	    } else {
+		/* geolocation IS NOT available */
+	    }
+	    
+	}, 
+	setUpVideo: function(){
+	    var ctx = this;
+	    console.rlog("screen", window.screen.width, window.screen.height)
+	    
+	    var refreshIntervalId = setInterval(function(){
+		var video = document.querySelector('video[display="none"]')
+		if (video) {
+		    video.addEventListener( "loadedmetadata", function (e) {
+			console.rlog("loadedmetadata", new Date())
+			
+			ctx.$refs.scene.style.width = (window.screen.width) + "px"
+			ctx.$refs.scene.style.height = (window.screen.width / video.videoWidth * video.videoHeight) + "px"
+			
+			console.rlog("video", video.videoWidth, video.videoHeight)
+			console.rlog("scene", ctx.$refs.scene.style.width, ctx.$refs.scene.style.height)
+			console.rlog("scene", ctx.$refs.scene.getClientRects())
+			console.rlog("scene", ctx.$refs.scene.getBoundingClientRect())
+			
+			let aScene = ctx.$refs.scene
+			
+			console.rlog("aspect before", aScene.camera.aspect);
+			try {
+			    aScene.camera.aspect = aScene.clientWidth/aScene.clientHeight;
+			    aScene.camera.updateProjectionMatrix();
+			    console.rlog("aspect after", aScene.camera.aspect)
+			} catch(e) {
+			    console.rlog("error", e.toString())
+			}
+		}, false );
+		    console.rlog("in video", new Date())
+		    clearInterval(refreshIntervalId)
+		}
+	    }, 1000);
+	}
     },
     components: {
     },
