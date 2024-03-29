@@ -32,6 +32,8 @@ var app = new Vue({
 	routes: [
 	    { path: '/camera/iframe/:content?',  component: httpVueLoader('components/iframe.vue'), name: "iframear" },
 	    { path: '/camera/vue',     component: httpVueLoader('components/ar.vue'), name: "vuear" },
+	    { path: '/touch',     component: httpVueLoader('components/touch.vue'), name: "touch" },
+	    { path: '/handdetection',  component: httpVueLoader('components/handdetection.vue'), name: "handdetection" },
 	    { path: '/',     component: httpVueLoader('components/index.vue') },
     	],
     })),
