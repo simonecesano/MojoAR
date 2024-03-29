@@ -1,11 +1,12 @@
 <style>
   body * { font-family: Courier }
   #main { padding: 0; margin: 0 }
-  #scene { width: 100vw; height: 50vh; padding: 0; margin: 0 }
+  #scene { width: 100vw; height: 100vh; padding: 0; margin: 0 }
   /* a.button { display: inline-block; padding: 12px; margin: 12px; background-color: grey; text-decoration:none; color: inherit } */
 
 
   video[display="none"] { display: none }
+
 
 </style>
 <template>
