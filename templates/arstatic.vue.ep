@@ -12,7 +12,8 @@
       <a-camera gps-new-camera='gpsMinDistance: 5; near: 10; far: 40'></a-camera>
       % for my $p ($points->@*) {
       <a-entity position="0 2 0"
-		material='color: red' geometry='primitive: box'
+		material='color: red'
+		geometry='primitive: box'
 		gps-new-entity-place="latitude: <%= $p->{coords}->[1] %>; longitude: <%= $p->{coords}->[0] %>" scale="3 3 3"></a-entity>
       % }
     </a-scene>
