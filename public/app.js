@@ -31,10 +31,11 @@ var app = new Vue({
     router: (new VueRouter({
 	routes: [
 	    { path: '/camera/iframe/:content?',  component: httpVueLoader('components/iframe.vue'), name: "iframear" },
-	    { path: '/camera/vue',     component: httpVueLoader('components/ar.vue'), name: "vuear" },
-	    { path: '/touch',     component: httpVueLoader('components/touch.vue'), name: "touch" },
-	    { path: '/handdetection',  component: httpVueLoader('components/handdetection.vue'), name: "handdetection" },
-	    { path: '/',     component: httpVueLoader('components/index.vue') },
+	    { path: '/camera/vuedynamic',        component: httpVueLoader('components/ardynamic.vue'), name: "vueardynamic" },
+	    { path: '/camera/vuestatic',         component: httpVueLoader('components/arstatic.vue'), name: "vuearstatic" },
+	    { path: '/touch',                    component: httpVueLoader('components/touch.vue'), name: "touch" },
+	    { path: '/handdetection',            component: httpVueLoader('components/handdetection.vue'), name: "handdetection" },
+	    { path: '/',                         component: httpVueLoader('components/index.vue') },
     	],
     })),
     data(){
